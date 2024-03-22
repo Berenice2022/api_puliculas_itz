@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome API Movies</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      body {
+        padding-top: 56px;
+      }
+      .sidebar {
+        position: fixed;
+        top: 56px;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        padding: 20px;
+        background-color: rgb(161, 155, 155);
+        border-width: 2px;
+        border-color: rgba(5, 5, 5, 0.862);
+      }
+      .content {
+        margin-left: 250px;
+        padding: 20px;
+      }
+      .card-header {
+        background-color: rgba(5, 5, 5, 0.862);
+      }
+    </style>
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-expand-md navbar-dark bg-primary text-dark fixed-top"
+    >
+      <a href="#" class="navbar-brand">MY API MOVIE ITZ</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="navbarNav" class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a href="#" class="nav-link"
+              >Start
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <form id="logoutForm" action="/logout" method="post">
+              <input type="hidden" name="_token" value="<%= token %>" />
+              <a
+                href="#"
+                onclick="document.getElementById('logoutForm').submit();"
+                class="nav-link"
+                >Logout
+                <span class="sr-only"></span>
+              </a>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!--Menu Lateral-->
+    <div class="sidebar">
+      <h5>Menu</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a href="#" class="nav-link active">
+            <i class="fas fa-home"></i>
+            Start
+          </a>
+        </li>
+        <li class="nav-item">
+          <a target="blank" href="/pelicula-docs" class="nav-link active">
+            <i class="fas fa-book"></i>
+            Documentation
+          </a>
+        </li>
+        <li class="nav-item">
+          <a target="blank" href="/index.html" class="nav-link active">
+            <i class="fas fa-chart-simple"></i>
+            Resource Monitor
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            href="https://github.com/Berenice2022/api_puliculas_itz"
+          >
+            <i class="fas fa-cog"></i>
+            Git Repository API-Peliculas
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!--Contenido Principal-->
+    <div class="content">
+      <h2>Welcome API Movies</h2>
+      <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="text-center" style="color: white">User Profile</h2>
+              </div>
+              <div class="card-body">
+                <% if(message){ %>
+                <div class="alert alert-warning"><%= message %></div>
+                <% } %>
+                <!--Informacion del Usuario-->
+                <div class="form-group">
+                  <laber for="email">Email</laber>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="email"
+                    readonly
+                    value="<%= email %>"
+                    id="email"
+                  />
+                </div>
+                <div class="form-group">
+                  <laber for="api_key">API KEY</laber>
+                  <input type="text" class="form-control name="api_key" readonly
+                  value="<%= api_key %>" id="api_key">
+                </div>
+                <div class="form-group">
+                  <laber for="saldo">Balance</laber>
+                  <input type="text" class="form-control name="saldo" readonly
+                  value="<%= saldo %>" id="saldo">
+                </div>
+                <!--Boton para llmar el modal de recargar saldo-->
+                <button
+                  data-toggle="modal"
+                  data-target="#actualizarSaldoModal"
+                  class="btn btn-primary btn-block"
+                >
+                  Recharge balance
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Modal para actualizar el saldo-->
+    <div
+      id="actualizarSaldoModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="actualizarSaldoModalLabel"
+      aria-hidden="true"
+      class="modal fade"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Update balance</h5>
+            <button data-dissmin="modal" aria-label="Close" class="close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form
+              action="/agregarSaldo"
+              id="actualizarSaldoForms"
+              method="post"
+            >
+              <input type="hidden" value="<%= token %>" name="_csrf" />
+              <input type="hidden" value="<%= email %>" name="email" />
+              <input type="hidden" value="<%= api_key %>" name="api_key" />
+              <div class="form-group">
+                <label for="">New balance </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="nuevoSaldo"
+                  id="nuevoSaldo"
+                />
+              </div>
+              <button class="btn btn-primary" type="submit">
+                Update balance
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>

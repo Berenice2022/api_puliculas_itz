@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monitoreo de recursos de la API Peliculas</title>
+  </head>
+  <body>
+    <h1>Monitor de recursos</h1>
+    <div>
+      <canvas id="myChart"></canvas>
+    </div>
+  </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const recursosChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Uso de Memoria (MB)',
+            data: [],
+            backgroundColor: 'rgba(75,192,192,0.2)',
+            borderColor: 'rgba(75,192,192,1)',
+            borderWidth: 1,
+          },
+          {
+            label: 'Usu del CPU (%)',
+            data: [],
+            backgroundColor: 'rgba(192,192,75,0.2)',
+            borderColor: 'rgba(192,192,75,1)',
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    function obtenerRecursos() {
+      fetch('/recursos')
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          const fecha = new Date().toLocaleTimeString();
+          recursosChart.data.labels.push(fecha);
+          recursosChart.data.datasets[0].data.push(data.usoMemoria.uso / 1024);
+          recursosChart.data.datasets[1].data.push(data.usoCPU) * 100;
+          recursosChart.update();
+        });
+    }
+    setInterval(obtenerRecursos, 5000);
+  </script>
+</html>
